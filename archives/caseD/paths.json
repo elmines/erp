@@ -1,0 +1,7 @@
+{"negative": "neg.json",
+ "positive": "pos.json",
+ "numEquations": 60,
+ "timeInterval": 2000,
+ "speaking":false,
+ "notes": "Bad results comparable to the other case where I did speak. I think the issue is just the time range."
+}
