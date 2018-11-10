@@ -105,7 +105,7 @@ with tf.Session() as sess:
 		print("\t   accuracy =", accuracy)
 		print()
 		if accuracy >= bestAccuracy: bestAccuracy = accuracy
-		else:                        break
+		else:                        pass #break
 
 print("LDA Model", flush=True)
 ldaModel = LinearDiscriminantAnalysis()

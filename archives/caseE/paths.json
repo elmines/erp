@@ -3,5 +3,5 @@
  "numEquations": 60,
  "timeInterval": 1500,
  "speaking":true,
- "notes": "Decent results in the .60s, though early stopping kicked in quickly (I think because of differences in the pos/neg proportions for the training and testing sets"
+ "notes": "At least gets up to ~67%"
 }
