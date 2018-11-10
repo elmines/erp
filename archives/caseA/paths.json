@@ -1,0 +1,6 @@
+{"negative": "neg.json",
+ "positive": "pos.json",
+ "numEquations": 60,
+ "speaking":false,
+ "notes": "We achieved about a 72% test accuracy with logistic regression and %50 with LDA."
+}

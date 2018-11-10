@@ -1,3 +1,0 @@
-{ "training": {"negative": "negTrain.json", "positive": "posTrain.json"},
-   "testing": {"negative":  "negTest.json", "positive":  "posTest.json"}
-}
