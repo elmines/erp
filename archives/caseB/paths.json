@@ -1,6 +1,0 @@
-{"negative": "neg.json",
- "positive": "pos.json",
- "numEquations": 60,
- "speaking":true,
- "notes": "We achieved about a 64% test accuracy with logistic regression and %52 with LDA. It may be that speaking generates too much extra noise"
-}

@@ -1,7 +1,0 @@
-{"negative": "neg.json",
- "positive": "pos.json",
- "numEquations": 60,
- "timeInterval": 1500,
- "speaking":false,
- "notes": "Again, decent results in the .60s. I think it will be best to stick in this time range, though I may first test this experimental setup again when I'm better rested."
-}

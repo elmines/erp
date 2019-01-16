@@ -1,7 +1,0 @@
-{"negative": "neg.json",
- "positive": "pos.json",
- "numEquations": 60,
- "timeInterval": 2000,
- "speaking":true,
- "notes": "Training terminated after 2 epochs (went from 45% testing accuracy to 42%). LDA at least scored 60%. 2000 ms may be too much time"
-}

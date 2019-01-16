@@ -1,7 +1,0 @@
-{"negative": "neg.json",
- "positive": "pos.json",
- "numEquations": 60,
- "timeInterval": 1500,
- "speaking":true,
- "notes": "At least gets up to ~67%"
-}
