@@ -9,7 +9,6 @@ np.random.seed(0)
 from tools import *
 import ml
 
-
 def main(args):
 	padLength = 256
 	trainPercent = 0.75
@@ -27,24 +26,25 @@ def main(args):
 	randomIndices = np.random.permutation(len(data))
 	data = data[randomIndices]
 	labels = labels[randomIndices]
-	(trainInputs, testInputs) = partition(data, trainPercent)
-	(trainLabels, testLabels) = partition(labels, trainPercent)
 
-	numNegTrain = sum(trainLabels == 1)
-	numPosTrain = len(trainLabels) - numNegTrain
-	numNegTest = sum(testLabels == 1)
-	numPosTest = len(testLabels) - numNegTest
-	print("Training on {} samples".format(len(trainInputs)))
+	(trainSet, testSet) = partition(trainPercent, data, labels)
+
+
+	numNegTrain = sum(trainSet.labels == 1)
+	numPosTrain = len(trainSet.labels) - numNegTrain
+	numNegTest = sum(testSet.labels == 1)
+	numPosTest = len(testSet.labels) - numNegTest
+	print("Training on {} samples".format(len(trainSet.inputs)))
 	print("\t{} negative training cases, {} positive training cases".format(numNegTrain, numPosTrain))
 	print("\t{} negative testing  cases, {} positive testing  cases".format(numNegTest, numPosTest))
 
 
 	if args.regression:
 		print("Logistic Regression Model")
-		ml.logRegression(trainInputs, trainLabels, testInputs, testLabels)
+		ml.logRegression(trainSet, testSet)
 	if args.lda:
 		print("LDA Model", flush=True)
-		ml.lda(trainInputs, trainLabels, testInputs, testLabels)
+		ml.lda(trainSet, testSet)
 
 
 

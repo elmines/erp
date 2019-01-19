@@ -4,10 +4,10 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 from metrics import *
 
-def logRegression(trainInputs, trainLabels, testInputs, testLabels):
+def logRegression(trainSet, testSet):
 	#TRAINING
 	#Graph
-	inputs = tf.placeholder(tf.float32, (None, trainInputs.shape[-1]) )
+	inputs = tf.placeholder(tf.float32, (None, trainSet.inputs.shape[-1]) )
 	labels = tf.placeholder(tf.float32, None)
 	logit = tf.squeeze(tf.layers.dense(inputs, 1))
 	loss = tf.losses.sigmoid_cross_entropy(labels, logit)
@@ -17,16 +17,13 @@ def logRegression(trainInputs, trainLabels, testInputs, testLabels):
 	#Graph
 	predictions = tf.cast(tf.round(tf.nn.sigmoid(logit)), tf.int32)
 
-	dataDict = {"trainInputs": trainInputs, "trainLabels": trainLabels,
-			"testInputs": testInputs, "testLabels": testLabels}
+	trainSession(trainSet, testSet, inputs, labels, loss, train_op, predictions)
 
-	trainSession(dataDict, inputs, labels, loss, train_op, predictions)
-
-def trainSession(partitionedData, inputs, labels, loss, train_op, predictions):
-	trainInputs = partitionedData["trainInputs"]
-	testInputs = partitionedData["testInputs"]
-	trainLabels = partitionedData["trainLabels"]
-	testLabels = partitionedData["testLabels"]
+def trainSession(trainSet, testSet, inputs, labels, loss, train_op, predictions):
+	trainInputs = trainSet.inputs
+	testInputs = testSet.inputs
+	trainLabels = trainSet.labels
+	testLabels = testSet.labels
 
 
 	numEpochs = 20
@@ -51,7 +48,10 @@ def trainSession(partitionedData, inputs, labels, loss, train_op, predictions):
 			if testAccuracy >= bestAccuracy: bestAccuracy = testAccuracy
 			else:                        pass #break
 
-def lda(trainInputs, trainLabels, testInputs, testLabels):
+def lda(trainSet, testSet):
+	(trainInputs, trainLabels) = (trainSet.inputs, trainSet.labels)
+	(testInputs, testLabels) = (testSet.inputs, testSet.labels)
+
 	ldaModel = LinearDiscriminantAnalysis()
 	ldaModel.fit(trainInputs, trainLabels)
 	ldaPredictions = ldaModel.predict(testInputs)

@@ -2,6 +2,8 @@ import numpy as np
 import json
 import sys
 
+import data
+
 def maxReading():
 	return 80
 
@@ -75,11 +77,16 @@ def prepare(neg, pos):
 	inputArray = np.reshape(inputArray, (inputArray.shape[0], np.prod(inputArray.shape[1:])))
 	labelsArray = np.array([0]*len(neg) + [1]*len(pos))
 	return (inputArray, labelsArray)
-def partition(sequence: list, trainingPercent: float):
-	trainingIndex = int(len(sequence) * trainingPercent)
-	trainingSet = sequence[:trainingIndex]
-	testSet = sequence[trainingIndex:]
-	return (trainingSet, testSet)
+
+
+def partition(percent, inputs, labels):
+	sequenceLengths = len(inputs)
+	splitIndex = int(sequenceLengths * percent)
+
+	trainSet = data.Dataset(inputs=inputs[:splitIndex], labels=labels[:splitIndex])
+	testSet = data.Dataset(inputs=inputs[splitIndex:], labels=labels[splitIndex:])
+
+	return (trainSet, testSet)
 
 def json2numpy(jsonData):
 	"""
