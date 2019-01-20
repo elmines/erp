@@ -19,7 +19,7 @@ def main(args):
 	taper(neg)
 
 	data = np.concatenate( (pos, neg), axis=0 )
-	data = data.reshape( (data.shape[0], np.prod(data.shape[1:])) ) #Flatten latter axes
+	#data = data.reshape( (data.shape[0], np.prod(data.shape[1:])) ) #Flatten latter axes
 	labels = np.array(len(pos) * [1] + len(neg) * [0])
 
 	#Shuffle
@@ -45,6 +45,9 @@ def main(args):
 	if args.lda:
 		print("LDA Model", flush=True)
 		ml.lda(trainSet, testSet)
+	if args.conv:
+		print("Convolutional Model")
+		ml.convolution(trainSet, testSet)
 
 
 
@@ -54,6 +57,7 @@ if __name__ == "__main__":
 	parser.add_argument("--data", metavar="data.json", required=True, help="Path to EDF-style JSON file")
 	parser.add_argument("--regression", action="store_true", help="Train logistic regression model")
 	parser.add_argument("--lda", action="store_true", help="Train linear discriminant model")
+	parser.add_argument("--conv", action="store_true", help="Train a convolutional neural network")
 	args = parser.parse_args()
 
 	main(args)
