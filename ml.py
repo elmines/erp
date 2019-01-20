@@ -21,24 +21,15 @@ def logRegression(trainSet, testSet):
 
 def convolution(trainSet, testSet):
 	inputs = tf.placeholder(tf.float32, (None,) + trainSet.inputs.shape[1:])
-	print("input.shape =", inputs.shape)
 	labels = tf.placeholder(tf.float32, None)
-
-	convolved = tf.layers.conv1d(inputs, 1, 64)
-	print("convolved.shape =", convolved.shape)
-	pooled = tf.layers.max_pooling1d(convolved, 3, 1)
-	print("pooled.shape =", pooled.shape)
-
-
-	projection = tf.layers.dense( tf.layers.flatten(pooled), 1)
-	print("projection.shape =", projection)
-	logit = tf.squeeze(projection)
+	convolved = tf.layers.conv1d(inputs, filters=6, kernel_size=96, strides=1)
+	pooled = tf.layers.max_pooling1d(convolved, pool_size=3, strides=2)
+	logit = tf.squeeze( tf.layers.dense(tf.layers.flatten(pooled), 1) )
 	loss = tf.losses.sigmoid_cross_entropy(labels, logit)
 	#TESTING
 	#Graph
 	predictions = tf.cast(tf.round(tf.nn.sigmoid(logit)), tf.int32)
 
-	#sys.exit(0)
 	trainSession(trainSet, testSet, inputs, labels, loss, predictions)
 
 def trainSession(trainSet, testSet, inputs, labels, loss, predictions):
