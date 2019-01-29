@@ -2,7 +2,7 @@ import numpy as np
 import json
 import sys
 
-import data
+from . import data
 
 def maxReading():
 	return 80
@@ -115,4 +115,3 @@ def json2numpy(jsonData):
 		i = j
 
 	return (pos, neg)
-

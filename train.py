@@ -1,3 +1,6 @@
+"""
+Script for performing training via the command-line, rather than programmatically.
+"""
 import argparse
 import tensorflow as tf
 import numpy as np
@@ -6,8 +9,8 @@ tf.set_random_seed(0)
 np.random.seed(0)
 
 #Local modules
-from tools import *
-import ml
+from package.tools import *
+from package import ml
 
 def main(args):
 	padLength = 256
@@ -47,7 +50,7 @@ def main(args):
 		ml.lda(trainSet, testSet)
 	if args.conv:
 		print("Convolutional Model")
-		ml.convolution(trainSet, testSet)
+		ml.convolution(trainSet, testSet, args.model_dir)
 
 
 
@@ -58,6 +61,8 @@ if __name__ == "__main__":
 	parser.add_argument("--regression", action="store_true", help="Train logistic regression model")
 	parser.add_argument("--lda", action="store_true", help="Train linear discriminant model")
 	parser.add_argument("--conv", action="store_true", help="Train a convolutional neural network")
+
+	parser.add_argument("--model_dir", default="models/", help="Directory to save model")
 	args = parser.parse_args()
 
 	main(args)
