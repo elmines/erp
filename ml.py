@@ -3,19 +3,26 @@ import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 from metrics import *
+from data import Dataset
 
 import sys
 
 def logRegression(trainSet, testSet):
 	#TRAINING
 	#Graph
-	inputs = tf.placeholder(tf.float32, (None, trainSet.inputs.shape[-1]) )
+	inputs = tf.placeholder(tf.float32, (None, np.prod(trainSet.inputs.shape[1:]) ) )
 	labels = tf.placeholder(tf.float32, None)
 	logit = tf.squeeze(tf.layers.dense(inputs, 1))
 	loss = tf.losses.sigmoid_cross_entropy(labels, logit)
 	#TESTING
 	#Graph
 	predictions = tf.cast(tf.round(tf.nn.sigmoid(logit)), tf.int32)
+
+	tail = np.prod(trainSet.inputs.shape[1:])
+	trainSet = Dataset(inputs=trainSet.inputs.reshape(trainSet.inputs.shape[0], tail),
+		labels=trainSet.labels)
+	testSet = Dataset(inputs=testSet.inputs.reshape(testSet.inputs.shape[0], tail),
+		labels=testSet.labels)
 
 	trainSession(trainSet, testSet, inputs, labels, loss, predictions)
 
@@ -78,4 +85,3 @@ def lda(trainSet, testSet):
 	ldaF1          = f1(ldaPredictions, testLabels)
 	print("\t   accuracy={0}, precision={1}, recall={2}, f1={3}".format(
 		ldaAccuracy, ldaPrecision, ldaRecall, ldaF1))
-
