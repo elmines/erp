@@ -1,6 +1,7 @@
 """
 Script for performing training via the command-line, rather than programmatically.
 """
+import sys
 import argparse
 import tensorflow as tf
 import numpy as np
@@ -8,9 +9,11 @@ import numpy as np
 tf.set_random_seed(0)
 np.random.seed(0)
 
+
+sys.path.append("../..")
 #Local modules
-from package.tools import *
-from package import ml
+from erp.tools import *
+from erp import ml
 
 def main(args):
 	padLength = 256
@@ -62,7 +65,7 @@ if __name__ == "__main__":
 	parser.add_argument("--lda", action="store_true", help="Train linear discriminant model")
 	parser.add_argument("--conv", action="store_true", help="Train a convolutional neural network")
 
-	parser.add_argument("--model_dir", default="models/", help="Directory to save model")
+	parser.add_argument("--model_dir", default="ckpts/", help="Directory to save model checkpoints")
 	args = parser.parse_args()
 
 	main(args)
