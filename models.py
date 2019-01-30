@@ -3,7 +3,7 @@ from collections import namedtuple
 import tensorflow as tf
 
 class Model(
-	namedtuple("Model", ["inputs", "labels", "loss", "train_op", "outputs"])
+	namedtuple("Model", ["inputs", "labels", "loss", "train_op", "predictions"])
 ):
 	pass
 

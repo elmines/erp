@@ -16,16 +16,21 @@ from erp.tools import *
 from erp import ml
 
 def main(args):
-	padLength = 256
+
+	models = [args.lda, args.regression, args.conv]
+	if np.sum(models) != 1:
+		print("Specify one of --lda, --regression, or --conv")
+
+	packetLength = 256
+	maxReading = 80
 	trainPercent = 0.75
+
 	rawDataset = readJson(args.data)
-	(rawPos, rawNeg) = json2numpy(rawDataset)
-	(pos, neg) = (resampleBatch(rawPos, padLength), resampleBatch(rawNeg, padLength))
-	taper(pos)
-	taper(neg)
+	(rawPos, rawNeg) = json2numpy(rawDataset, packetLength)
+	pos = cleanBatch(rawPos, maxReading, packetLength)
+	neg = cleanBatch(rawNeg, maxReading, packetLength)
 
 	data = np.concatenate( (pos, neg), axis=0 )
-	#data = data.reshape( (data.shape[0], np.prod(data.shape[1:])) ) #Flatten latter axes
 	labels = np.array(len(pos) * [1] + len(neg) * [0])
 
 	#Shuffle
@@ -45,15 +50,18 @@ def main(args):
 	print("\t{} negative testing  cases, {} positive testing  cases".format(numNegTest, numPosTest))
 
 
+	inputShape = trainSet.inputs.shape[1:]
 	if args.regression:
 		print("Logistic Regression Model")
-		ml.logRegression(trainSet, testSet)
+		model = ml.logRegression(inputShape)
+		ml.trainSession(trainSet, testSet, model, args.model_dir)
 	if args.lda:
 		print("LDA Model", flush=True)
 		ml.lda(trainSet, testSet)
 	if args.conv:
 		print("Convolutional Model")
-		ml.convolution(trainSet, testSet, args.model_dir)
+		model = ml.convolution(inputShape)
+		ml.trainSession(trainSet, testSet, model, args.model_dir)
 
 
 

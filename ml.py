@@ -2,58 +2,71 @@ import tensorflow as tf
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+from .models import Model
 from .metrics import *
 from .data import Dataset
 
 import os
 
-def logRegression(trainSet, testSet):
+def logRegression(shape):
 	#TRAINING
 	#Graph
-	inputs = tf.placeholder(tf.float32, (None, np.prod(trainSet.inputs.shape[1:]) ) )
+	inputs = tf.placeholder(tf.float32, (None,) + tuple(shape), name="inputs")
+	flatInputs = tf.layers.flatten(inputs)
+
 	labels = tf.placeholder(tf.float32, None)
-	logit = tf.squeeze(tf.layers.dense(inputs, 1))
+	logit = tf.squeeze(tf.layers.dense(flatInputs, 1))
 	loss = tf.losses.sigmoid_cross_entropy(labels, logit)
+	optimizer = tf.train.AdamOptimizer()
+	train_op = optimizer.minimize(loss)
 	#TESTING
 	#Graph
 	predictions = tf.cast(tf.round(tf.nn.sigmoid(logit)), tf.int32)
 
-	tail = np.prod(trainSet.inputs.shape[1:])
-	trainSet = Dataset(inputs=trainSet.inputs.reshape(trainSet.inputs.shape[0], tail),
-		labels=trainSet.labels)
-	testSet = Dataset(inputs=testSet.inputs.reshape(testSet.inputs.shape[0], tail),
-		labels=testSet.labels)
 
-	trainSession(trainSet, testSet, inputs, labels, loss, predictions)
+	m = Model(inputs=inputs, labels=labels, loss=loss, train_op=train_op,
+		predictions=predictions)
+	return m
 
-def convolution(trainSet, testSet, model_dir=None):
-	inputs = tf.placeholder(tf.float32, (None,) + trainSet.inputs.shape[1:], name="inputs")
+#def convolution(trainSet, testSet, model_dir=None):
+def convolution(shape):
+	"""
+	:param shape: The shape of the inputs (should be [numChannels, samplesPerChannel])
+	"""
+	inputs = tf.placeholder(tf.float32, (None,) + tuple(shape), name="inputs")
 	labels = tf.placeholder(tf.float32, None)
 	convolved = tf.layers.conv1d(inputs, filters=6, kernel_size=96, strides=1)
 	pooled = tf.layers.max_pooling1d(convolved, pool_size=3, strides=2)
 	logit = tf.squeeze( tf.layers.dense(tf.layers.flatten(pooled), 1) )
 	loss = tf.losses.sigmoid_cross_entropy(labels, logit)
+	optimizer = tf.train.AdamOptimizer()
+	train_op = optimizer.minimize(loss)
 	#TESTING
 	#Graph
 	predictions = tf.cast(tf.round(tf.nn.sigmoid(logit)), tf.int32, name="predictions")
 
+	m = Model(inputs=inputs, labels=labels, loss=loss, train_op=train_op,
+		predictions=predictions)
+
+	return  m
 
 	trainSession(trainSet, testSet, inputs, labels, loss, predictions,
 		model_dir=model_dir)
 	print("inputs =", inputs)
 	print("predictions =", predictions)
 
-def trainSession(trainSet, testSet, inputs, labels, loss, predictions,
-	model_dir=None):
-	optimizer = tf.train.AdamOptimizer()
-	train_op = optimizer.minimize(loss)
+def trainSession(trainSet, testSet, model, model_dir=None):
 
+	inputs = model.inputs
+	labels = model.labels
+	loss = model.loss
+	train_op = model.train_op
+	predictions = model.predictions
 
 	trainInputs = trainSet.inputs
 	testInputs = testSet.inputs
 	trainLabels = trainSet.labels
 	testLabels = testSet.labels
-
 
 	numEpochs = 20
 	print("Training model for {} epochs".format(numEpochs))
