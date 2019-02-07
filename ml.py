@@ -28,16 +28,22 @@ def logRegression(shape):
 		predictions=predictions)
 	return m
 
-#def convolution(trainSet, testSet, model_dir=None):
-def convolution(shape):
+def convolution(shape, classes=1):
 	"""
 	:param shape: The shape of the inputs (should be [numChannels, samplesPerChannel])
+	:param int classes: The number of different output classes
 	"""
 	inputs = tf.placeholder(tf.float32, (None,) + tuple(shape), name="inputs")
-	labels = tf.placeholder(tf.float32, None)
+
+	if classes > 1:
+		labels = tf.placeholder(tf.float32, (None, classes), name="labels")
+	else:
+		labels = tf.placeholder(tf.float32, (None,), name="labels")
+
+
 	convolved = tf.layers.conv1d(inputs, filters=6, kernel_size=96, strides=1)
 	pooled = tf.layers.max_pooling1d(convolved, pool_size=3, strides=2)
-	logit = tf.squeeze( tf.layers.dense(tf.layers.flatten(pooled), 1) )
+	logit = tf.squeeze( tf.layers.dense(tf.layers.flatten(pooled), classes) )
 	loss = tf.losses.sigmoid_cross_entropy(labels, logit)
 	optimizer = tf.train.AdamOptimizer()
 	train_op = optimizer.minimize(loss)
