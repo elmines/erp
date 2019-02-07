@@ -30,7 +30,7 @@ def logRegression(shape):
 
 def convolution(shape, classes=1):
 	"""
-	:param shape: The shape of the inputs (should be [numChannels, samplesPerChannel])
+	:param shape: The shape of the inputs (should be [samplesPerChannel, numChannels])
 	:param int classes: The number of different output classes
 	"""
 	inputs = tf.placeholder(tf.float32, (None,) + tuple(shape), name="inputs")
